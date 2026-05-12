@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   signup(body: SignupPayload): Observable<UserInfo> {
-    return this.http.post<UserInfo>(`${API_BASE}/auth/signup:`, body);
+    return this.http.post<UserInfo>(`${API_BASE}/auth/signup`, body);
   }
 
   logout() {

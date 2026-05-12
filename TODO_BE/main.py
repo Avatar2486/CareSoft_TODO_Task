@@ -1,16 +1,18 @@
 from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 app = FastAPI(title="Task API ")
 
-# -- Cors Section ----
-# app.add_exception_handler(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -- Secret Key for JWT
 SECRET_KEY = "abccdbbhcdh"
@@ -82,7 +84,7 @@ def get_current_user_id(Authorization: str = Header(None)) -> int:
 
 
 # Auth Endpoint Login and Signup
-@app.post("/auth/signup:", response_model=UserResponse, status_code=200)
+@app.post("/auth/signup", response_model=UserResponse, status_code=200)
 def signup(body : SignupRequest):
     global user_counter
     user_counter += 1
