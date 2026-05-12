@@ -13,7 +13,7 @@ export class TaskService {
 
   getTasks(status?: string): Observable<Task[]> {
     let params = new HttpParams();
-    if (status) {
+    if (status && status !== 'All') {
       params = params.set('status', status);
     }
     return this.http.get<Task[]>(`${API_BASE}/tasks`, {

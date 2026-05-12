@@ -17,7 +17,7 @@ export class TaskPage {
   private auth = inject(AuthService);
 
   tasks: Task[] = [];
-  activeStatus: string = 'Open';
+  activeStatus: string = 'All';
   loading = false;
   saving = false;
   error = '';
@@ -30,6 +30,7 @@ export class TaskPage {
   loadTasks() {
     this.loading = true;
     this.error = '';
+    this.tasks = [];
 
     this.taskService.getTasks(this.activeStatus).subscribe({
       next: (items) => {
@@ -43,15 +44,20 @@ export class TaskPage {
     });
   }
 
+  refreshTasks() {
+    this.selectedTask = null;
+    this.activeStatus = 'All';
+    this.loadTasks();
+  }
+
   createTask(payload: { title: string; description: string; status: string }) {
     this.saving = true;
     this.error = '';
 
     this.taskService.createTask(payload).subscribe({
       next: () => {
-        this.selectedTask = null;
         this.saving = false;
-        this.loadTasks();
+        this.refreshTasks();
       },
       error: () => {
         this.error = 'Unable to create task.';
@@ -78,8 +84,7 @@ export class TaskPage {
     this.taskService.updateTask(this.selectedTask.id, payload).subscribe({
       next: () => {
         this.saving = false;
-        this.selectedTask = null;
-        this.loadTasks();
+        this.refreshTasks();
       },
       error: () => {
         this.error = 'Unable to update task.';
@@ -95,7 +100,7 @@ export class TaskPage {
     }
 
     this.taskService.deleteTask(task.id).subscribe({
-      next: () => this.loadTasks(),
+      next: () => this.refreshTasks(),
       error: () => {
         this.error = 'Unable to remove task.';
       }

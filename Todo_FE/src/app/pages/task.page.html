@@ -10,6 +10,7 @@
       <label>
         Show
         <select (change)="changeFilter($any($event.target).value)" [value]="activeStatus">
+          <option value="All">All</option>
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
           <option value="Completed">Completed</option>
@@ -43,7 +44,7 @@
       </div>
 
       <ul *ngIf="tasks.length > 0" class="task-list">
-        <li *ngFor="let task of tasks" class="task-row">
+        <li *ngFor="let task of tasks" class="task-row" [class.editing]="selectedTask?.id === task.id">
           <div>
             <h3>{{ task.title }}</h3>
             <p>{{ task.description || 'No description provided.' }}</p>

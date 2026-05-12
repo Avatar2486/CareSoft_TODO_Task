@@ -77,6 +77,10 @@ select {
   border-radius: 14px;
 }
 
+.task-row.editing {
+  border-color: #2563eb;
+}
+
 .task-row h3 {
   margin: 0 0 0.4rem;
 }
