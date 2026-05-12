@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { TaskService } from '../task.service';
 import { AuthService } from '../auth.service';
 import { Task } from '../models';
@@ -12,83 +13,92 @@ import { TaskFormComponent } from '../components/task-form.component';
   templateUrl: './task.page.html',
   styleUrls: ['./task.page.css']
 })
-export class TaskPage {
+export class TaskPage implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   private auth = inject(AuthService);
 
-  tasks: Task[] = [];
-  activeStatus: string = 'All';
-  loading = false;
-  saving = false;
-  error = '';
-  selectedTask: Task | null = null;
+  tasks = signal<Task[]>([]);
+  activeStatus = signal('All');
+  loading = signal(false);
+  saving = signal(false);
+  error = signal('');
+  selectedTask = signal<Task | null>(null);
+  private taskSub?: Subscription;
 
   ngOnInit() {
-    this.loadTasks();
+    this.loadTasks(true);
   }
 
-  loadTasks() {
-    this.loading = true;
-    this.error = '';
-    this.tasks = [];
+  ngOnDestroy() {
+    this.taskSub?.unsubscribe();
+  }
 
-    this.taskService.getTasks(this.activeStatus).subscribe({
-      next: (items) => {
-        this.tasks = items;
-        this.loading = false;
+  loadTasks(forceAll = false) {
+    if (forceAll) {
+      this.activeStatus.set('All');
+    }
+
+    this.loading.set(true);
+    this.error.set('');
+    this.tasks.set([]);
+
+    this.taskSub?.unsubscribe();
+    this.taskSub = this.taskService.getTasks(this.activeStatus()).subscribe({
+      next: (data) => {
+        this.tasks.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
       },
       error: () => {
-        this.error = 'Could not load tasks. Try again.';
-        this.loading = false;
+        this.error.set('Could not load tasks. Try again.');
+        this.loading.set(false);
       }
     });
   }
 
   refreshTasks() {
-    this.selectedTask = null;
-    this.activeStatus = 'All';
-    this.loadTasks();
+    this.selectedTask.set(null);
+    this.loadTasks(true);
   }
 
   createTask(payload: { title: string; description: string; status: string }) {
-    this.saving = true;
-    this.error = '';
+    this.saving.set(true);
+    this.error.set('');
 
     this.taskService.createTask(payload).subscribe({
       next: () => {
-        this.saving = false;
+        this.saving.set(false);
         this.refreshTasks();
       },
       error: () => {
-        this.error = 'Unable to create task.';
-        this.saving = false;
+        this.error.set('Unable to create task.');
+        this.saving.set(false);
       }
     });
   }
 
   editTask(task: Task) {
-    this.selectedTask = task;
+    this.selectedTask.set(task);
   }
 
   cancelEdit() {
-    this.selectedTask = null;
+    this.selectedTask.set(null);
   }
 
   saveTask(payload: { title: string; description: string; status: string }) {
-    if (!this.selectedTask) {
+    if (!this.selectedTask()) {
       this.createTask(payload);
       return;
     }
 
-    this.saving = true;
-    this.taskService.updateTask(this.selectedTask.id, payload).subscribe({
+    this.saving.set(true);
+    this.taskService.updateTask(this.selectedTask()!.id, payload).subscribe({
       next: () => {
-        this.saving = false;
+        this.saving.set(false);
         this.refreshTasks();
       },
       error: () => {
-        this.error = 'Unable to update task.';
-        this.saving = false;
+        this.error.set('Unable to update task.');
+        this.saving.set(false);
       }
     });
   }
@@ -102,13 +112,13 @@ export class TaskPage {
     this.taskService.deleteTask(task.id).subscribe({
       next: () => this.refreshTasks(),
       error: () => {
-        this.error = 'Unable to remove task.';
+        this.error.set('Unable to remove task.');
       }
     });
   }
 
   changeFilter(status: string) {
-    this.activeStatus = status;
+    this.activeStatus.set(status);
     this.loadTasks();
   }
 

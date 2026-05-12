@@ -9,7 +9,7 @@
     <div class="filter-group">
       <label>
         Show
-        <select (change)="changeFilter($any($event.target).value)" [value]="activeStatus">
+        <select (change)="changeFilter($any($event.target).value)" [value]="activeStatus()">
           <option value="All">All</option>
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
@@ -21,11 +21,11 @@
 
   <div class="task-grid">
     <div class="task-panel">
-      <h2>{{ selectedTask ? 'Edit task' : 'New task' }}</h2>
+      <h2>{{ selectedTask() ? 'Edit task' : 'New task' }}</h2>
       <task-form
-        [task]="selectedTask"
-        [submitLabel]="selectedTask ? 'Update task' : 'Add task'"
-        [pending]="saving"
+        [task]="selectedTask()"
+        [submitLabel]="selectedTask() ? 'Update task' : 'Add task'"
+        [pending]="saving()"
         (save)="saveTask($event)"
         (cancel)="cancelEdit()"
       ></task-form>
@@ -33,18 +33,18 @@
 
     <div class="task-list-panel">
       <div class="panel-head">
-        <h2>{{ activeStatus }} tasks</h2>
-        <span>{{ tasks.length }} items</span>
+        <h2>{{ activeStatus() }} tasks</h2>
+        <span>{{ tasks().length }} items</span>
       </div>
 
-      <div *ngIf="loading" class="empty-state">Loading tasks...</div>
-      <div *ngIf="error" class="error-box">{{ error }}</div>
-      <div *ngIf="!loading && tasks.length === 0" class="empty-state">
+      <div *ngIf="loading()" class="empty-state">Loading tasks...</div>
+      <div *ngIf="error()" class="error-box">{{ error() }}</div>
+      <div *ngIf="!loading() && tasks().length === 0" class="empty-state">
         No tasks in this status yet.
       </div>
 
-      <ul *ngIf="tasks.length > 0" class="task-list">
-        <li *ngFor="let task of tasks" class="task-row" [class.editing]="selectedTask?.id === task.id">
+      <ul *ngIf="tasks().length > 0" class="task-list">
+        <li *ngFor="let task of tasks()" class="task-row" [class.editing]="selectedTask()?.id === task.id">
           <div>
             <h3>{{ task.title }}</h3>
             <p>{{ task.description || 'No description provided.' }}</p>

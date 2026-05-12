@@ -16,9 +16,10 @@ export class TaskService {
     if (status && status !== 'All') {
       params = params.set('status', status);
     }
+
     return this.http.get<Task[]>(`${API_BASE}/tasks`, {
-      params,
-      headers: this.auth.authHeader
+      headers: this.auth.authHeader,
+      params
     });
   }
 
