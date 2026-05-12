@@ -1,0 +1,71 @@
+.task-form-card {
+  background: #ffffff;
+  border: 1px solid #d3d7dc;
+  border-radius: 14px;
+  padding: 1.2rem;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+}
+
+.task-form-row {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.task-form-row label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.task-form-row input,
+.task-form-row textarea,
+.task-form-row select {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.task-form-row textarea {
+  resize: vertical;
+}
+
+.status-row {
+  grid-template-columns: 1fr;
+}
+
+.field-message {
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+button.primary,
+button.secondary {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.1rem;
+  font-weight: 600;
+}
+
+button.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+button.secondary {
+  background: #eef2ff;
+  color: #1f2937;
+}
+
+button:disabled {
+  opacity: 0.6;
+}

@@ -1,0 +1,31 @@
+<form class="task-form-card" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="task-form-row">
+    <label for="title">Title</label>
+    <input id="title" formControlName="title" type="text" placeholder="Add a title" />
+  </div>
+
+  <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="field-message">
+    Title must be at least 3 characters.
+  </div>
+
+  <div class="task-form-row">
+    <label for="description">Description</label>
+    <textarea id="description" formControlName="description" rows="3" placeholder="Task details"></textarea>
+  </div>
+
+  <div class="task-form-row status-row">
+    <label for="status">Status</label>
+    <select id="status" formControlName="status">
+      <option value="Open">Open</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+
+  <div class="form-buttons">
+    <button type="button" class="secondary" (click)="cancel.emit()" [disabled]="pending">Cancel</button>
+    <button type="submit" class="primary" [disabled]="pending">
+      {{ submitLabel }}
+    </button>
+  </div>
+</form>

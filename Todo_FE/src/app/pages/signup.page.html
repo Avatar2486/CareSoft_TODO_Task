@@ -1,0 +1,40 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <h2>Sign up</h2>
+    <p>Create an account and start tracking tasks.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>
+        Username
+        <input type="text" formControlName="username" placeholder="Your name" />
+      </label>
+      <div class="field-error" *ngIf="form.get('username')?.invalid && form.get('username')?.touched">
+        Give your account a name.
+      </div>
+
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+      </label>
+      <div class="field-error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        Please enter a valid email.
+      </div>
+
+      <label>
+        Password
+        <input type="password" formControlName="password" placeholder="password" />
+      </label>
+      <div class="field-error" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+        Password must be at least 5 chars.
+      </div>
+
+      <button type="submit" [disabled]="loading">Create account</button>
+      <div class="form-error" *ngIf="error">{{ error }}</div>
+    </form>
+
+    <div class="auth-foot">
+      <span>Already have an account?</span>
+      <a routerLink="/login">Log in</a>
+    </div>
+  </div>
+</section>

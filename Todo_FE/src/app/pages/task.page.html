@@ -1,0 +1,59 @@
+<section class="task-page">
+  <div class="task-header">
+    <div>
+      <p class="breadcrumb">Hi {{ username }},</p>
+      <h1>Tasks</h1>
+      <p class="subtitle">Manage your todo list and keep things moving.</p>
+    </div>
+
+    <div class="filter-group">
+      <label>
+        Show
+        <select (change)="changeFilter($any($event.target).value)" [value]="activeStatus">
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="task-grid">
+    <div class="task-panel">
+      <h2>{{ selectedTask ? 'Edit task' : 'New task' }}</h2>
+      <task-form
+        [task]="selectedTask"
+        [submitLabel]="selectedTask ? 'Update task' : 'Add task'"
+        [pending]="saving"
+        (save)="saveTask($event)"
+        (cancel)="cancelEdit()"
+      ></task-form>
+    </div>
+
+    <div class="task-list-panel">
+      <div class="panel-head">
+        <h2>{{ activeStatus }} tasks</h2>
+        <span>{{ tasks.length }} items</span>
+      </div>
+
+      <div *ngIf="loading" class="empty-state">Loading tasks...</div>
+      <div *ngIf="error" class="error-box">{{ error }}</div>
+      <div *ngIf="!loading && tasks.length === 0" class="empty-state">
+        No tasks in this status yet.
+      </div>
+
+      <ul *ngIf="tasks.length > 0" class="task-list">
+        <li *ngFor="let task of tasks" class="task-row">
+          <div>
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description || 'No description provided.' }}</p>
+          </div>
+          <div class="task-actions">
+            <button type="button" class="ghost" (click)="editTask(task)">Edit</button>
+            <button type="button" class="danger" (click)="removeTask(task)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
